@@ -15,6 +15,7 @@
 		BED1DEF42BD64713007FAED1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BED1DEF22BD64713007FAED1 /* LaunchScreen.storyboard */; };
 		BED1DEFD2BD648D1007FAED1 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = BED1DEFC2BD648D1007FAED1 /* Realm */; };
 		BED1DEFF2BD648D1007FAED1 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = BED1DEFE2BD648D1007FAED1 /* RealmSwift */; };
+		BED1DF062BD8E6DF007FAED1 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED1DF052BD8E6DF007FAED1 /* AuthManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		BED1DEF02BD64713007FAED1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BED1DEF32BD64713007FAED1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BED1DEF52BD64713007FAED1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BED1DF052BD8E6DF007FAED1 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,7 @@
 				BED1DEE72BD64711007FAED1 /* AppDelegate.swift */,
 				BED1DEE92BD64711007FAED1 /* SceneDelegate.swift */,
 				BED1DEEB2BD64711007FAED1 /* ViewController.swift */,
+				BED1DF052BD8E6DF007FAED1 /* AuthManager.swift */,
 				BED1DEED2BD64711007FAED1 /* Main.storyboard */,
 				BED1DEF02BD64713007FAED1 /* Assets.xcassets */,
 				BED1DEF22BD64713007FAED1 /* LaunchScreen.storyboard */,
@@ -150,6 +153,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BED1DEEC2BD64711007FAED1 /* ViewController.swift in Sources */,
+				BED1DF062BD8E6DF007FAED1 /* AuthManager.swift in Sources */,
 				BED1DEE82BD64711007FAED1 /* AppDelegate.swift in Sources */,
 				BED1DEEA2BD64711007FAED1 /* SceneDelegate.swift in Sources */,
 			);
@@ -381,7 +385,7 @@
 			repositoryURL = "https://github.com/realm/realm-swift.git";
 			requirement = {
 				kind = exactVersion;
-				version = 4.1.0;
+				version = 10.43.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

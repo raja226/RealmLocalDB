@@ -8,19 +8,27 @@
 import UIKit
 import RealmSwift
 
-class LoginCredentials: RealmSwift.Object {
-    @objc dynamic var id: String = UUID().uuidString // Non-primary key property
-    @objc dynamic var username: String = ""
-    @objc dynamic var password: String = ""
+class LoginCredentials: Object {
+    //@Persisted var id: String = UUID().uuidString     // Non-primary key property
 
-//    override class func primaryKey() -> String? {
-//        return "id"
-//    }
+    //ObjectId = ObjectId.generate()
+    @Persisted(primaryKey: true) var _id: ObjectId
+    @Persisted var username: String = ""
+    @Persisted var password: String = ""
+    @Persisted var owner_id: String = ""
+    override class func primaryKey() -> String? {
+        return "_id"
+    }
 }
 class ViewController: UIViewController {
-    @IBOutlet weak var userNameTextField: UITextField!
     
+    @IBOutlet weak var userNameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
+    
+    let authManager = AuthManager.shared
+    var currentUser: User?
+    var realmObject = try! Realm()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -31,8 +39,8 @@ class ViewController: UIViewController {
         }
         
         //Custum config
-        
-        Realm.Configuration.defaultConfiguration = custumConfigRealm()
+        /*
+        Realm.Configuration.defaultConfiguration = localcustumConfigRealm()
         
         if let realmFileURL = Realm.Configuration.defaultConfiguration.fileURL {
             let realmFilePath = realmFileURL.path
@@ -47,17 +55,78 @@ class ViewController: UIViewController {
         } catch {
             print("Error initializing Realm: \(error)")
         }
+        
+        */
     }
     @IBAction func loginTapped(_ sender: UIButton) {
-        insertheDatainRealm(username: userNameTextField.text ?? "", password: passwordTextField.text ?? "")
+       // insertheDatainRealm(username: userNameTextField.text ?? "", password: passwordTextField.text ?? "")
+        loginwithAtlasPersonalDetails();
     }
     
+    func loginwithAtlasPersonalDetails() {
+        
+        authManager.login(email: "gogulayadhav@gmail.com", password: "Rajasekhar@226") { result in
+            switch result {
+            case .success(let user):
+                print("Logged in as user: \(user)")
+                self.currentUser = user
+                self.createAtlasDatabaseforFlexSyncConfig(currentuser: user)
+            case .failure(let error):
+                print("Failed to log in: \(error.localizedDescription)")
+            }
+        }
+        
+    }
+    
+    func createAtlasDatabaseforFlexSyncConfig(currentuser: User) {
+        do {
+            // Create Realm configuration with Flex Sync enabled
+            let app = App(id: "application-0-anzuc")
+            let currentUser = app.currentUser
+            
+  
+            
+            let config = currentUser?.flexibleSyncConfiguration(cancelAsyncOpenOnNonFatalErrors: false) { subscriptions in
+                
+                if subscriptions.first(named: "todo") == nil {
+                    subscriptions.append(QuerySubscription<LoginCredentials>(name: "todo") { $0.owner_id == currentuser.id })
+                    // Create a flexible sync subscription for LoginCredentials
+                   // subscriptions.append(QuerySubscription<LoginCredentials>(name: "Login", query: .none))
+                }
+            } ?? Realm.Configuration.defaultConfiguration
+
+            // Open the Realm instance
+            let realm = try Realm(configuration: config)
+
+            print("Realm database created successfully")
+            addItemToAtlasDatabase(realm: realm, currentUser: currentuser)
+        } catch {
+            print("Failed to create Realm database: \(error.localizedDescription)")
+        }
+    }
+
+    
+    func addItemToAtlasDatabase(realm:Realm, currentUser: User) {
+        do {
+            try realm.write {
+                let item = LoginCredentials()
+                item.username = userNameTextField.text ?? ""
+                item.password = passwordTextField.text ?? ""
+                item.owner_id = currentUser.id
+                realm.add(item)
+            }
+
+            print("Item added to Realm successfully")
+        } catch {
+            print("Failed to add item to Realm: \(error.localizedDescription)")
+        }
+    }
     
 }
 
 extension ViewController {
     
-    func custumConfigRealm() -> Realm.Configuration
+    func localcustumConfigRealm() -> Realm.Configuration
     {
         guard let documentsDirectoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
             fatalError("Failed to retrieve documents directory URL.")
